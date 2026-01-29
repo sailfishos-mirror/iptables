@@ -1230,7 +1230,7 @@ static int _conntrack3_mt_xlate(struct xt_xlate *xl,
 		if ((sinfo->state_mask & XT_CONNTRACK_STATE_SNAT) ||
 		    (sinfo->state_mask & XT_CONNTRACK_STATE_DNAT)) {
 			xt_xlate_add(xl, "%sct status %s%s", space,
-				     sinfo->invert_flags & XT_CONNTRACK_STATUS ? "!=" : "",
+				     sinfo->invert_flags & XT_CONNTRACK_STATE ? "!= " : "",
 				     sinfo->state_mask & XT_CONNTRACK_STATE_SNAT ? "snat" : "dnat");
 			space = " ";
 		} else {

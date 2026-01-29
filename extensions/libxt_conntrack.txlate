@@ -55,6 +55,12 @@ nft 'add rule ip filter INPUT ct direction original ct original protocol 6 ct st
 iptables-translate -t filter -A INPUT -m conntrack --ctstate SNAT -j ACCEPT
 nft 'add rule ip filter INPUT ct status snat counter accept'
 
+iptables-translate -t filter -A INPUT -m conntrack ! --ctstate SNAT -j ACCEPT
+nft 'add rule ip filter INPUT ct status != snat counter accept'
+
 iptables-translate -t filter -A INPUT -m conntrack --ctstate DNAT -j ACCEPT
 nft 'add rule ip filter INPUT ct status dnat counter accept'
+
+iptables-translate -t filter -A INPUT -m conntrack ! --ctstate DNAT -j ACCEPT
+nft 'add rule ip filter INPUT ct status != dnat counter accept'
 
