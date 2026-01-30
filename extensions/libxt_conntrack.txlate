@@ -64,3 +64,17 @@ nft 'add rule ip filter INPUT ct status dnat counter accept'
 iptables-translate -t filter -A INPUT -m conntrack ! --ctstate DNAT -j ACCEPT
 nft 'add rule ip filter INPUT ct status != dnat counter accept'
 
+iptables-translate -t filter -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT
+nft 'add rule ip filter INPUT ct status dnat ct state related,established counter accept'
+
+iptables-translate -t filter -A INPUT -m conntrack ! --ctstate RELATED,ESTABLISHED,DNAT -j ACCEPT
+nft 'add rule ip filter INPUT ct status != dnat ct state ! related,established counter accept'
+
+iptables-translate -t filter -A INPUT -m conntrack --ctstate ESTABLISHED,DNAT --ctstatus CONFIRMED -j ACCEPT
+nft 'add rule ip filter INPUT ct status dnat ct state established ct status confirmed counter accept'
+
+iptables-translate -t filter -A INPUT -m conntrack ! --ctstate RELATED,ESTABLISHED,DNAT --ctstatus CONFIRMED -j ACCEPT
+nft 'add rule ip filter INPUT ct status != dnat ct state ! related,established ct status confirmed counter accept'
+
+iptables-translate -t filter -A INPUT -m conntrack ! --ctstate RELATED,ESTABLISHED,DNAT ! --ctstatus CONFIRMED -j ACCEPT
+nft 'add rule ip filter INPUT ct status != dnat ct state ! related,established ct status ! confirmed counter accept'
