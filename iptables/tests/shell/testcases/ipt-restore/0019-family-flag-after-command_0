@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# -4/-6 during restore skips the whole line. If the flag appears after a
+# command has already been parsed, that command must be discarded.
+# Otherwise iptables-restore executes it without post_parse() and crashes
+# on NULL address pointers in replace_entry.
+
+set -e
+
+$XT_MULTI iptables-restore <<EOF
+*filter
+-A FORWARD -m comment --comment keep -j ACCEPT
+-R FORWARD 1 -6 -m comment --comment gone -j DROP
+-F FORWARD -6
+COMMIT
+EOF
+
+EXPECT='-A FORWARD -m comment --comment keep -j ACCEPT'
+diff -u -Z <(echo -e "$EXPECT") <($XT_MULTI iptables -S | grep -v '^-P')
+
+$XT_MULTI ip6tables-restore <<EOF
+*filter
+-A FORWARD -m comment --comment keep -j ACCEPT
+-R FORWARD 1 -4 -m comment --comment gone -j DROP
+-F FORWARD -4
+COMMIT
+EOF
+
+diff -u -Z <(echo -e "$EXPECT") <($XT_MULTI ip6tables -S | grep -v '^-P')

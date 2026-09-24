@@ -1903,8 +1903,10 @@ void do_parse(int argc, char *argv[],
 			if (args->family == AF_INET)
 				break;
 
-			if (p->restore && args->family == AF_INET6)
+			if (p->restore && args->family == AF_INET6) {
+				p->command = CMD_NONE;
 				return;
+			}
 
 			exit_tryhelp(2, p->line);
 
@@ -1912,8 +1914,10 @@ void do_parse(int argc, char *argv[],
 			if (args->family == AF_INET6)
 				break;
 
-			if (p->restore && args->family == AF_INET)
+			if (p->restore && args->family == AF_INET) {
+				p->command = CMD_NONE;
 				return;
+			}
 
 			exit_tryhelp(2, p->line);
 
